@@ -25,7 +25,7 @@ Simply press the install button in the top left of the page.
 
 ---
 
-Image: ![Exapmle image](./src/assets/JATE.png)
+Image: ![Example image](./src/assets/jate.png)
 
 Deployed app: https://jate-pwa-texteditor.herokuapp.com/
 
