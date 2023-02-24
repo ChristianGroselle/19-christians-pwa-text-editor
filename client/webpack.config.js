@@ -3,35 +3,6 @@ const WebpackPwaManifest = require("webpack-pwa-manifest");
 const path = require("path");
 const { InjectManifest } = require("workbox-webpack-plugin");
 
-// TODO: Add and configure workbox plugins for a service worker and manifest file.
-const workboxPlugins = [
-  new InjectManifest({
-    swSrc: "./src-sw.js",
-    swDest: "src-sw.js",
-  }),
-];
-
-// TODO: Add CSS loaders and babel to webpack.
-const cssLoader = {
-  test: /.css$/i,
-  use: ["style-loader", "css-loader"],
-};
-
-const babelLoader = {
-  test: /.m?js$/,
-  exclude: /node_modules/,
-  use: {
-    loader: "babel-loader",
-    options: {
-      presets: ["@babel/preset-env"],
-      plugins: [
-        "@babel/plugin-proposal-object-rest-spread",
-        "@babel/transform-runtime",
-      ],
-    },
-  },
-};
-
 module.exports = () => {
   return {
     mode: "development",
@@ -48,6 +19,10 @@ module.exports = () => {
         template: "./index.html",
         title: "J.A.T.E",
       }),
+      new InjectManifest({
+        swSrc: "./src-sw.js",
+        swDest: "src-sw.js",
+      }),
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
@@ -60,16 +35,35 @@ module.exports = () => {
         publicPath: "/",
         icons: [
           {
-            src: path.resolve(__dirname, "src/images/logo.png"),
+            src: path.resolve("src/images/logo.png"),
             sizes: [96, 128, 192, 256, 384, 512],
             destination: path.join("assets", "icons"),
           },
         ],
       }),
-      ...workboxPlugins,
     ],
+
     module: {
-      rules: [cssLoader, babelLoader],
+      rules: [
+        {
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.m?js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+              plugins: [
+                "@babel/plugin-proposal-object-rest-spread",
+                "@babel/transform-runtime",
+              ],
+            },
+          },
+        },
+      ],
     },
   };
 };

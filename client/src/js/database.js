@@ -15,40 +15,23 @@ const initdb = async () =>
 // TODO: Add logic to a method that accepts some content and adds it to the database
 export const putDb = async (content) => {
   const db = await openDB("jate", 1);
-  try {
-    const tx = db.transaction("jate", "readwrite");
-    const store = tx.objectStore("jate");
-    const request = store.put({ value: content });
-    await tx.complete;
-    console.log("data saved", request.result.value);
-  } catch (error) {
-    console.error("Error adding content to database", error);
-  } finally {
-    db.close();
-  }
+  const tx = db.transaction("jate", "readwrite");
+  const store = tx.objectStore("jate");
+  const request = store.put({ id: 1, value: content });
+  const result = await request;
+  console.log("data saved", result.value);
 };
 
 // TODO: Add logic for a method that gets all the content from the database
 export const getDb = async () => {
   const db = await openDB("jate", 1);
-  try {
-    const tx = db.transaction("jate", "readonly");
-    const store = tx.objectStore("jate");
-    const request = store.getAll();
-    await tx.complete;
-    if (request.result.length > 0) {
-      console.log("data retrieved", request.result);
-      return request.result;
-    } else {
-      console.log("data not found");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error retrieving content from database", error);
-    return null;
-  } finally {
-    db.close();
-  }
+  const tx = db.transaction("jate", "readonly");
+  const store = tx.objectStore("jate");
+  const request = store.get(1);
+  const result = await request;
+  result
+    ? console.log("data retrieved", result.value)
+    : console.log("data not found");
+  return result?.value;
 };
-
 initdb();
